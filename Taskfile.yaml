@@ -60,3 +60,19 @@ tasks:
     desc: Lint Markdown files
     cmds:
       - rumdl check .
+
+  test:native:
+    desc: Run native PlatformIO unit tests
+    cmds:
+      - pio test -e native
+
+  test:regression:
+    desc: Run python regression tests against upstream codebase
+    cmds:
+      - uv run python test/test_regression.py
+
+  test:
+    desc: Run all tests
+    cmds:
+      - task: test:native
+      - task: test:regression

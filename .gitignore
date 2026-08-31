@@ -5,3 +5,5 @@ build
 # config
 **/Config.h
 **/Certificate.h
+.codegraph/
+.cache/
