@@ -1,7 +1,7 @@
 #include "mqtt_manager.h"
 #include <Arduino.h>
 #include "wifi_manager.h"
-#include "settings_manager.h"
+#include "Config.h"
 
 static PubSubClient mqttClient(getWifiClient());
 
@@ -11,7 +11,7 @@ PubSubClient& getMqttClient() {
 
 void configureMqtt()
 {
-  mqttClient.setServer(settings_mqtt_server.c_str(), settings_mqtt_port);
+  mqttClient.setServer(mqtt_server, mqtt_server_port);
 }
 
 void connectToMqtt(HomeAssistantBridge& bridge)
@@ -31,7 +31,7 @@ void connectToMqtt(HomeAssistantBridge& bridge)
 
       Serial.print("Attempting MQTT connection...");
 
-      if(mqttClient.connect(settings_device_id.c_str(), settings_mqtt_user.c_str(), settings_mqtt_password.c_str())) {
+      if(mqttClient.connect(deviceId, mqttUser, mqttPassword)) {
         Serial.println("connected");
         digitalWrite(LED_MQTT, HIGH);
       }

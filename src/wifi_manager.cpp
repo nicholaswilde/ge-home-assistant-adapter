@@ -5,8 +5,7 @@
 #ifdef MQTT_TLS
 #include <WiFiClientSecure.h>
 #endif
-#include "settings_manager.h"
-#include "Certificate.h"
+#include "Config.h"
 
 #ifdef MQTT_TLS
 static WiFiClientSecure wifiClient;
@@ -43,11 +42,16 @@ void configureWifi()
 {
   WiFiManager wm;
 
+  // Prevent compiler warnings for unused configuration variables
+  Serial.print("Default SSID: ");
+  Serial.println(ssid);
+  (void)password;
+
   // Set WiFi status LED low (indicating connecting)
   digitalWrite(LED_WIFI, LOW);
 
   // Set SSID for Access Point to HA-Adapter-<deviceId>
-  String apName = "HA-Adapter-" + settings_device_id;
+  String apName = "HA-Adapter-" + String(deviceId);
 
   Serial.println("Starting WiFiManager...");
   
