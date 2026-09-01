@@ -48,7 +48,7 @@ class TestUpstreamRegression(unittest.TestCase):
         includes = [
             "PubSubClient.h",
             "WiFi.h",
-            "Config.h",
+            
             "HomeAssistantBridge.h"
         ]
         for inc in includes:
@@ -57,7 +57,7 @@ class TestUpstreamRegression(unittest.TestCase):
     def test_bridge_initialization(self):
         """Ensure the bridge is initialized with mqtt and serial."""
         self.assertTrue(re.search(r'HomeAssistantBridge\s+bridge;', self.local_main), "Missing bridge instance")
-        self.assertTrue(re.search(r'bridge\.begin\s*\(\s*(mqttClient|getMqttClient\(\))\s*,\s*Serial1\s*,\s*deviceId\s*\)', self.local_main), "Missing bridge.begin")
+        self.assertTrue(re.search(r'bridge\.begin\s*\(\s*(mqttClient|getMqttClient\(\))\s*,\s*Serial1\s*,\s*.*device_id.*\s*\)', self.local_main), "Missing bridge.begin")
 
     def test_bridge_loop(self):
         """Ensure bridge.loop() is called."""

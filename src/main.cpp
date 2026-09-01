@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "HomeAssistantBridge.h"
-#include "Config.h"
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 #include "settings_manager.h"
@@ -16,12 +15,12 @@ void setup()
   pinMode(LED_WIFI, OUTPUT);
   pinMode(LED_MQTT, OUTPUT);
 
+  configureSettings();
   configureWifi();
   configureMqtt();
-  configureSettings();
 
   Serial1.begin(HomeAssistantBridge::baud, SERIAL_8N1, D7, D6);
-  bridge.begin(getMqttClient(), Serial1, deviceId);
+  bridge.begin(getMqttClient(), Serial1, settings_device_id.c_str());
 }
 
 void loop()

@@ -9,8 +9,6 @@ set -e
 set -o pipefail
 
 # Constants
-CONFIG_SAMPLE="config/Config.h.sample"
-CONFIG_TARGET="config/Config.h"
 CERT_SAMPLE="config/Certificate.h.sample"
 CERT_TARGET="config/Certificate.h"
 
@@ -30,8 +28,6 @@ log() {
 main() {
   log "INFO" "Starting CI build process..."
 
-  if [[ ! -f "$CONFIG_SAMPLE" ]]; then
-    log "ERRO" "Config sample file $CONFIG_SAMPLE not found!"
     exit 1
   fi
 
@@ -41,7 +37,6 @@ main() {
   fi
 
   log "INFO" "Preparing configuration files..."
-  cp "$CONFIG_SAMPLE" "$CONFIG_TARGET"
   cp "$CERT_SAMPLE" "$CERT_TARGET"
 
   log "INFO" "Compiling the firmware using go-task..."

@@ -12,7 +12,6 @@ tasks:
   init:
     desc: Initialize the repo
     cmds:
-      - '[ -f config/Config.h ] || cp config/Config.h.sample config/Config.h'
       - '[ -f config/Certificate.h ] || cp config/Certificate.h.sample config/Certificate.h'
       - 'git config core.hooksPath .githooks'
 
