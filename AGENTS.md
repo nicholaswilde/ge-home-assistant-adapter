@@ -23,4 +23,14 @@ Boundaries: code/commits/PRs written normal.
 # GitHub CLI / Issue Management
 - NEVER create, close, or modify GitHub issues on the upstream repository (`geappliances/home-assistant-adapter`).
 - ALWAYS target the user's fork (`nicholaswilde/home-assistant-adapter`) for any GitHub operations. If using the `gh` CLI, explicitly append `--repo nicholaswilde/home-assistant-adapter` to guarantee the correct target.
+- ALWAYS pipe `gh` commands to `cat` (e.g. `gh issue list | cat`, `gh issue view 1 | cat`) to bypass interactive pagers and prompt hangs.
 - When addressing GitHub issues, always include an issue-closing keyword in the commit message (e.g., `Fixes #X` or `Closes #X`) to automatically close the issue upon push.
+
+# Project Rules & Guidelines
+
+## RTK Command Guidelines
+- **Git Operations**: Prefix `git` commands with `rtk` (e.g., `rtk git status`, `rtk git diff`, `rtk git log`, `rtk git commit`, `rtk git push`).
+- **GitHub CLI**: Prefix `gh` commands with `rtk` (e.g., `rtk gh issue list | cat`, `rtk gh pr status | cat`). Always pipe `gh` commands to `cat` to bypass interactive pagers.
+- **File & Directory Inspection**: Use `rtk ls`, `rtk tree`, `rtk find`, or `rtk read` when listing or reading files to get token-optimized output.
+- **Searching**: Use `rtk grep` or `rtk rg` for line search pattern matching.
+- **Build & Test Outputs**: Use `rtk err` or `rtk test` when running build/test commands to filter output to errors/failures only (e.g. `rtk test pio test -e native`).
