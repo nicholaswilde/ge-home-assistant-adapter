@@ -4,7 +4,7 @@ import unittest
 import urllib.request
 
 UPSTREAM_REPO = os.environ.get("UPSTREAM_REPO", "https://github.com/geappliances/home-assistant-adapter")
-LOCAL_REPO = os.environ.get("LOCAL_REPO", "/home/nicholas/git/nicholaswilde/home-assistant-adapter")
+LOCAL_REPO = os.environ.get("LOCAL_REPO", os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 class TestUpstreamRegression(unittest.TestCase):
     def setUp(self):
