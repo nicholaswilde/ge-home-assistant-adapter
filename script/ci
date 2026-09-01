@@ -47,6 +47,9 @@ main() {
   log "INFO" "Compiling the firmware using go-task..."
   task build
 
+  log "INFO" "Running test suite..."
+  task test
+
   log "INFO" "CI build completed successfully."
 }
 

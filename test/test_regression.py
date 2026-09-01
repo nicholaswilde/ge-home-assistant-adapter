@@ -35,8 +35,13 @@ class TestUpstreamRegression(unittest.TestCase):
             with open(os.path.join(upstream, "src/main.cpp"), 'r') as f:
                 self.upstream_main = f.read()
         
-        with open(os.path.join(LOCAL_REPO, "src/main.cpp"), 'r') as f:
-            self.local_main = f.read()
+        local_code = ""
+        src_dir = os.path.join(LOCAL_REPO, "src")
+        for file in os.listdir(src_dir):
+            if file.endswith(".cpp") or file.endswith(".h"):
+                with open(os.path.join(src_dir, file), 'r') as f:
+                    local_code += f.read() + "\n"
+        self.local_main = local_code
 
     def test_essential_includes(self):
         """Ensure core includes are still present."""
@@ -52,7 +57,7 @@ class TestUpstreamRegression(unittest.TestCase):
     def test_bridge_initialization(self):
         """Ensure the bridge is initialized with mqtt and serial."""
         self.assertTrue(re.search(r'HomeAssistantBridge\s+bridge;', self.local_main), "Missing bridge instance")
-        self.assertTrue(re.search(r'bridge\.begin\s*\(\s*mqttClient\s*,\s*Serial1\s*,\s*deviceId\s*\)', self.local_main), "Missing bridge.begin")
+        self.assertTrue(re.search(r'bridge\.begin\s*\(\s*(mqttClient|getMqttClient\(\))\s*,\s*Serial1\s*,\s*deviceId\s*\)', self.local_main), "Missing bridge.begin")
 
     def test_bridge_loop(self):
         """Ensure bridge.loop() is called."""

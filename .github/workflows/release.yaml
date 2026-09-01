@@ -1,0 +1,97 @@
+---
+name: Release
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        env:
+          - xiao_c3
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: "Create filename"
+        run: |
+          VAR="home-assistant-adapter-${{ github.ref_name }}-${{ matrix.env }}"
+          echo "BASENAME=${VAR,,}" >> $GITHUB_ENV
+
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: "Setup Task"
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+
+      - name: "Setup Python & uv"
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.11'
+
+      - name: "Cache PlatformIO Core"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio-${{ hashFiles('**/platformio.ini') }}
+          restore-keys: |
+            ${{ runner.os }}-pio-
+
+      - name: "Install PlatformIO Core"
+        run: uv pip install --system platformio
+
+      - name: "Prepare Config"
+        run: |
+          cp config/Config.h.sample config/Config.h
+          cp config/Certificate.h.sample config/Certificate.h
+
+      - name: "Build PlatformIO Project ${{ matrix.env }}"
+        run: pio run --environment ${{ matrix.env }}
+
+      - name: "Zip binaries and documentation"
+        run: |
+          zip -j ${{ env.BASENAME }}.zip .pio/build/${{ matrix.env }}/*.bin README.md LICENSE version.txt config/Config.h.sample config/Certificate.h.sample
+
+      - name: "Upload ${{ matrix.env }} artifacts"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BASENAME }}
+          path: ${{ env.BASENAME }}.zip
+
+  release:
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Download all artifacts"
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "home-assistant-adapter-*"
+          path: dist
+
+      - name: "Create Draft Release"
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          draft: true
+          prerelease: false
+          files: dist/**/*
+          generate_release_notes: true

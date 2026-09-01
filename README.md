@@ -37,6 +37,14 @@ Builds the firmware into `.pio/build/xiao_c3/firmware.bin`.
 task build
 ```
 
+### Test
+
+Runs native unit tests and python regression tests.
+
+```bash
+task test
+```
+
 ### Clean
 
 Deletes all build artifacts.
