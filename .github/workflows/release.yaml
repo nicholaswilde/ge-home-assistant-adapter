@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-pio-
 
       - name: "Install PlatformIO Core"
-        run: uv pip install --system platformio
+        run: uv tool install platformio
 
       - name: "Prepare Config"
         run: |
