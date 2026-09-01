@@ -23,3 +23,4 @@ Boundaries: code/commits/PRs written normal.
 # GitHub CLI / Issue Management
 - NEVER create, close, or modify GitHub issues on the upstream repository (`geappliances/home-assistant-adapter`).
 - ALWAYS target the user's fork (`nicholaswilde/home-assistant-adapter`) for any GitHub operations. If using the `gh` CLI, explicitly append `--repo nicholaswilde/home-assistant-adapter` to guarantee the correct target.
+- When addressing GitHub issues, always include an issue-closing keyword in the commit message (e.g., `Fixes #X` or `Closes #X`) to automatically close the issue upon push.
