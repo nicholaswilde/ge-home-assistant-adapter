@@ -72,8 +72,11 @@ def main():
     if sections['docs']:
         summary.append("### 📝 **Documentation**\n\n" + "\n".join(sections['docs']) + "\n")
         
-    url_range = git_range.replace("..", "...")
-    summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/home-assistant-adapter/compare/{url_range}\n")
+    if ".." in git_range:
+        url_range = git_range.replace("..", "...")
+        summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/home-assistant-adapter/compare/{url_range}\n")
+    else:
+        summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/home-assistant-adapter/commits/{latest}\n")
     
     notes = "\n".join(summary)
     
