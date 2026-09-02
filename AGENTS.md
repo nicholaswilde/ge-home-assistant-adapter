@@ -34,3 +34,7 @@ Boundaries: code/commits/PRs written normal.
 - **File & Directory Inspection**: Use `rtk ls`, `rtk tree`, `rtk find`, or `rtk read` when listing or reading files to get token-optimized output.
 - **Searching**: Use `rtk grep` or `rtk rg` for line search pattern matching.
 - **Build & Test Outputs**: Use `rtk err` or `rtk test` when running build/test commands to filter output to errors/failures only (e.g. `rtk test pio test -e native`).
+
+## Build & Initialization
+- **Configuration Setup**: ALWAYS run `task init` before building a fresh clone. This ensures required header files (`Config.h` and `Certificate.h`) are generated from their `.sample` templates. The build will fail with missing headers if this is skipped.
+- **PlatformIO Toolchain Workaround**: PlatformIO's package registry mirrors (specifically for the ESP32 RISC-V toolchain required by `seeed_xiao_esp32c3`) can be unreliable or unresponsive. To bypass this, `task build` executes `script/install_toolchain.sh` as a pre-build dependency. This script manually downloads and installs the toolchain from Espressif's GitHub releases, and `platformio.ini` uses a `symlink://` package source to force PlatformIO to use it.

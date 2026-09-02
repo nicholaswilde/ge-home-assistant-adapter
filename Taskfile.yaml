@@ -26,8 +26,14 @@ tasks:
   #   cmds:
   #     - task: build
 
+  install-toolchain:
+    desc: Install the platformio toolchain manually
+    cmds:
+      - ./script/install_toolchain.sh
+
   build:
     desc: Build the firmware
+    deps: [install-toolchain]
     cmds:
       - pio run -e {{.PIO_ENV}}
 
@@ -36,10 +42,28 @@ tasks:
     cmds:
       - pio run -t upload -e {{.PIO_ENV}}
 
+  eau:
+    desc: Erase flash and upload firmware
+    cmds:
+      - pio run -t erase -e {{.PIO_ENV}}
+      - pio run -t upload -e {{.PIO_ENV}}
+
   monitor:
     desc: Open the serial monitor
     cmds:
       - pio device monitor
+
+  euam:
+    desc: Erase, upload, and monitor the device
+    cmds:
+      - task: eau
+      - task: monitor
+
+  uam:
+    desc: Upload and monitor the device
+    cmds:
+      - task: upload
+      - task: monitor
 
   read-mac:
     desc: Read the MAC address of the ESP device

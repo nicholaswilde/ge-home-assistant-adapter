@@ -42,25 +42,46 @@ void configureWifi()
 {
   WiFiManager wm;
 
-  // Prevent compiler warnings for unused configuration variables
-  Serial.print("Default SSID: ");
-  Serial.println(ssid);
-  (void)password;
-
   // Set WiFi status LED low (indicating connecting)
   digitalWrite(LED_WIFI, LOW);
 
-  // Set SSID for Access Point to HA-Adapter-<deviceId>
-  String apName = "HA-Adapter-" + String(deviceId);
+  // Set SSID for Access Point to ha-adapter-<mac>
+  String mac = WiFi.macAddress();
+  String cleanMac = "";
+  for (size_t i = 0; i < mac.length(); i++) {
+    if (mac[i] != ':') {
+      cleanMac += mac[i];
+    }
+  }
+  String last4 = cleanMac.substring(cleanMac.length() - 4);
+  last4.toLowerCase();
+  String apName = "ha-adapter-" + last4;
 
   Serial.println("Starting WiFiManager...");
-  
+
+  // If the user provided credentials in Config.h, try them first
+  if (String(ssid) != "Your SSID" && String(ssid) != "") {
+    Serial.print("Attempting to connect to hardcoded SSID: ");
+    Serial.println(ssid);
+    WiFi.begin(ssid, password);
+    
+    // Wait up to 10 seconds for connection
+    unsigned long startTime = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - startTime < 10000) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println();
+  }
+
   // Automatically connect using saved credentials,
   // or start the captive portal Access Point if connection fails
-  if (!wm.autoConnect(apName.c_str())) {
-    Serial.println("Failed to connect and hit timeout. Restarting...");
-    delay(3000);
-    ESP.restart();
+  if (WiFi.status() != WL_CONNECTED) {
+    if (!wm.autoConnect(apName.c_str())) {
+      Serial.println("Failed to connect and hit timeout. Restarting...");
+      delay(3000);
+      ESP.restart();
+    }
   }
 
   // Once connected, set WiFi status LED high
