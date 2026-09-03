@@ -12,6 +12,8 @@ The Home Assistant adapter consists of a
 [carrier board](doc/schematic-v1.0.pdf) that breaks out the serial interface of
 the Xiao to an RJ45 jack.
 
+See the [Compatibility List](doc/compatibility-list) for supported GE appliance models (cooking, dishwashers, dryers, washers, and water heaters).
+
 ## :hammer_and_wrench: Setup
 
 1. Install [PlatformIO](https://platformio.org/) and [go-task](https://taskfile.dev).
