@@ -90,6 +90,11 @@ tasks:
     cmds:
       - pio test -e native
 
+  check:
+    desc: Run static code analysis
+    cmds:
+      - pio check
+
   test:regression:
     desc: Run python regression tests against upstream codebase
     cmds:

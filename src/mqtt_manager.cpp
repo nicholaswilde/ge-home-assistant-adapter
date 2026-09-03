@@ -17,30 +17,31 @@ void configureMqtt()
 void connectToMqtt(HomeAssistantBridge& bridge)
 {
   connectToWifi();
+  
+  if (WiFi.status() != WL_CONNECTED) {
+    return; // Wait for WiFi before attempting MQTT
+  }
+
   digitalWrite(LED_WIFI, HIGH);
 
   if(!mqttClient.connected()) {
     digitalWrite(LED_MQTT, LOW);
 
-    unsigned retries = 0;
-    while(!mqttClient.connected()) {
-      if(retries++ > 10) {
-        Serial.println("MQTT connection failed, restarting...");
-        ESP.restart();
-      }
-
-      Serial.print("Attempting MQTT connection...");
-
-      if(mqttClient.connect(deviceId, mqttUser, mqttPassword)) {
-        Serial.println("connected");
-        digitalWrite(LED_MQTT, HIGH);
-      }
-      else {
-        Serial.println("failed, rc=" + String(mqttClient.state()) + " will try again in 1 second");
-        delay(1000);
-      }
+    static unsigned long lastMqttAttempt = 0;
+    if (millis() - lastMqttAttempt < 1000) {
+      return;
     }
+    lastMqttAttempt = millis();
 
-    bridge.notifyMqttDisconnected();
+    Serial.print("Attempting MQTT connection...");
+
+    if(mqttClient.connect(deviceId, mqttUser, mqttPassword)) {
+      Serial.println("connected");
+      digitalWrite(LED_MQTT, HIGH);
+    }
+    else {
+      Serial.println("failed, rc=" + String(mqttClient.state()) + " will try again in 1 second");
+      bridge.notifyMqttDisconnected();
+    }
   }
 }
