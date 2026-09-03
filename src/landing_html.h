@@ -7,7 +7,7 @@ const char LANDING_HTML[] PROGMEM = R"=====(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Assistant Adapter Setup</title>
+    <title>GE Home Assistant Adapter Setup</title>
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; }
@@ -24,7 +24,7 @@ const char LANDING_HTML[] PROGMEM = R"=====(
 </head>
 <body>
     <div class="card">
-        <h2 style="margin-bottom: 5px;">Home Assistant Adapter</h2>
+        <h2 style="margin-bottom: 5px;">GE Home Assistant Adapter</h2>
         <p style="text-align: center; color: #a6adc8; margin-top: 0; margin-bottom: 20px; font-size: 14px;">Version v0.1.0</p>
         
         <a href="/wifi" class="btn btn-primary">Wi-Fi Connection</a>

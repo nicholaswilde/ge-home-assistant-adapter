@@ -49,7 +49,7 @@ const char WIFI_HTML[] PROGMEM = R"=====(
 </head>
 <body>
     <div class="card">
-        <h2 style="margin-bottom: 5px;">Home Assistant Adapter</h2>
+        <h2 style="margin-bottom: 5px;">GE Home Assistant Adapter</h2>
         <p style="text-align: center; color: #a6adc8; margin-top: 0; margin-bottom: 20px; font-size: 14px;">Version v0.1.0</p>
         
         <div class='section-title' style='margin-top: 0;'>Wi-Fi Connection</div>
