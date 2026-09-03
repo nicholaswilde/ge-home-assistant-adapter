@@ -3,8 +3,7 @@
 [![task](https://img.shields.io/badge/Task-Enabled-brightgreen?style=for-the-badge&logo=task&logoColor=white)](https://taskfile.dev/#/)
 [![ci](https://img.shields.io/github/actions/workflow/status/nicholaswilde/home-assistant-adapter/ci.yml?label=ci&style=for-the-badge&branch=main&logo=github-actions)](https://github.com/nicholaswilde/home-assistant-adapter/actions/workflows/ci.yml)
 
-Example firmware for the ESP32C3-based Home Assistant adapter
-[available from FirstBuild](https://firstbuild.com/inventions/home-assistant-adapter/).
+Firmware for the ESP32C3-based adapter [available from FirstBuild](https://firstbuild.com/inventions/home-assistant-adapter/) to connect GE appliances locally to Home Assistant via MQTT.
 
 ## :package: Hardware
 
@@ -26,6 +25,25 @@ the Xiao to an RJ45 jack.
 
 In-depth instructions can be found in the [Getting Started](doc/getting-started.md) guide.
 
+## :globe_with_meridians: Web Interface & Portal
+
+The firmware provides a Catppuccin-themed web interface for configuration and maintenance:
+- **Captive Portal / Wi-Fi Setup (`/wifi`)**: Connect to the device AP (e.g. `ha-adapter-XXXX`) to scan networks and configure Wi-Fi credentials.
+- **Device & MQTT Settings (`/settings`)**: Configure the MQTT Device ID, broker IP/port, username, masked password (with show/hide toggle), and base topic path. Values persist in NVS and fall back to `Config.h` defaults.
+- **OTA Firmware Update (`/update`)**: Modern drag-and-drop file upload zone for `.bin` firmware flashing.
+- **Device Reboot (`/restart`)**: Restart the adapter with automatic redirect back to dashboard upon reconnecting.
+
+## :sparkles: Differences from Upstream
+
+This fork includes several enhancements over the upstream repository ([`geappliances/home-assistant-adapter`](https://github.com/geappliances/home-assistant-adapter)):
+
+- **Web Configuration Portal**: Added an onboard Catppuccin-themed web interface with a captive portal for network scanning, Wi-Fi configuration, and device reboot.
+- **Web-Based MQTT Configuration**: Dynamic configuration for MQTT connection details (broker, port, credentials, topic path, device ID) saved to non-volatile storage (NVS via `Preferences`) without requiring recompilation.
+- **Password Masking & Visibility**: Password fields in the web interface feature show/hide toggle controls.
+- **Web OTA Firmware Updates**: Integrated browser-based OTA update server with a modern drag-and-drop file upload area.
+- **Auto-Discovery**: Automatic Home Assistant MQTT sensor discovery configuration published on connection.
+- **Non-Blocking Connectivity**: Improved asynchronous connection handling for Wi-Fi and MQTT to prevent watchdog lockups during network loss.
+- **Modern Tooling & CI**: Automated builds and checks with [Taskfile](https://taskfile.dev/), native Unity unit test suites, upstream regression tests, and automated GitHub release pipelines.
 
 ## :rocket: Usage
 
