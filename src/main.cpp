@@ -27,7 +27,7 @@ void setup()
   configureSettings(wifiManager.getServer());
 
   Serial1.begin(HomeAssistantBridge::baud, SERIAL_8N1, D7, D6);
-  bridge.begin(getMqttClient(), Serial1, deviceId);
+  bridge.begin(getMqttClient(), Serial1, getSavedDeviceId().c_str());
 }
 
 void loop()

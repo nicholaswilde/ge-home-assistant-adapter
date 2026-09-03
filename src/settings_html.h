@@ -54,9 +54,6 @@ const char SETTINGS_HTML[] PROGMEM = R"=====(
                 <span class='toggle-password' onclick='togglePwd("mqtt_password", this)'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
             </div>
             
-            <label for="mqtt_topic_path">MQTT Topic Path</label>
-            <input type="text" id="mqtt_topic_path" name="mqtt_topic_path" value="%MQTT_TOPIC_PATH%">
-            
             <button type="submit">Save Settings & Reboot</button>
         </form>
         <a href="/" class="btn btn-secondary" style="margin-bottom: 0;">Back to Dashboard</a>

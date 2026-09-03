@@ -5,3 +5,4 @@
 void configureMqtt();
 void connectToMqtt(HomeAssistantBridge& bridge);
 PubSubClient& getMqttClient();
+const String& getSavedDeviceId();

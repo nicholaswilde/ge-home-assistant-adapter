@@ -140,7 +140,6 @@ void WifiManager::setupRoutes() {
         if (_server.hasArg("mqtt_port")) _preferences.putUShort("mqtt_port", _server.arg("mqtt_port").toInt());
         if (_server.hasArg("mqtt_user")) _preferences.putString("mqtt_user", _server.arg("mqtt_user"));
         if (_server.hasArg("mqtt_password")) _preferences.putString("mqtt_pass", _server.arg("mqtt_password"));
-        if (_server.hasArg("mqtt_topic_path")) _preferences.putString("mqtt_topic", _server.arg("mqtt_topic_path"));
         
         String resHtml = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Saved</title>";
         resHtml += "<meta http-equiv='refresh' content='10;url=/'>";
@@ -225,7 +224,6 @@ void WifiManager::handleSettings() {
     html.replace("%MQTT_PORT%", String(_preferences.isKey("mqtt_port") ? _preferences.getUShort("mqtt_port") : mqtt_server_port));
     html.replace("%MQTT_USER%", _preferences.isKey("mqtt_user") ? _preferences.getString("mqtt_user") : String(mqttUser));
     html.replace("%MQTT_PASSWORD%", _preferences.isKey("mqtt_pass") ? _preferences.getString("mqtt_pass") : String(mqttPassword));
-    html.replace("%MQTT_TOPIC_PATH%", _preferences.isKey("mqtt_topic") ? _preferences.getString("mqtt_topic") : String(mqtt_topic_path));
     _server.send(200, "text/html", html);
 }
 

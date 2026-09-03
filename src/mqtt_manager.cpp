@@ -10,10 +10,13 @@ static String savedMqttServer;
 static String savedDeviceId;
 static String savedMqttUser;
 static String savedMqttPass;
-static String savedMqttTopicPath;
 
 PubSubClient& getMqttClient() {
   return mqttClient;
+}
+
+const String& getSavedDeviceId() {
+  return savedDeviceId;
 }
 
 void configureMqtt()
@@ -25,7 +28,6 @@ void configureMqtt()
   savedDeviceId = prefs.isKey("device_id") ? prefs.getString("device_id") : String(deviceId);
   savedMqttUser = prefs.isKey("mqtt_user") ? prefs.getString("mqtt_user") : String(mqttUser);
   savedMqttPass = prefs.isKey("mqtt_pass") ? prefs.getString("mqtt_pass") : String(mqttPassword);
-  savedMqttTopicPath = prefs.isKey("mqtt_topic") ? prefs.getString("mqtt_topic") : String(mqtt_topic_path);
   prefs.end();
 
   mqttClient.setServer(savedMqttServer.c_str(), savedMqttPort);
@@ -56,10 +58,10 @@ void connectToMqtt(HomeAssistantBridge& bridge)
       Serial.println("connected");
       digitalWrite(LED_MQTT, HIGH);
 
-      String discoveryTopic = savedMqttTopicPath + "/sensor/" + savedDeviceId + "/config";
-      String payload = String("{\"name\": \"") + savedDeviceId + String("\", \"state_topic\": \"") + savedDeviceId + String("/status\", \"unique_id\": \"") + savedDeviceId + String("\", \"device\": {\"identifiers\": [\"") + savedDeviceId + String("\"], \"name\": \"") + savedDeviceId + String("\"}}");
+      String discoveryTopic = String("homeassistant/sensor/") + savedDeviceId + "/config";
+      String payload = String("{\"name\": \"") + savedDeviceId + String("\", \"state_topic\": \"geappliances/") + savedDeviceId + String("/status\", \"unique_id\": \"") + savedDeviceId + String("\", \"device\": {\"identifiers\": [\"") + savedDeviceId + String("\"], \"name\": \"") + savedDeviceId + String("\"}}");
       mqttClient.publish(discoveryTopic.c_str(), payload.c_str(), true);
-      mqttClient.publish((savedDeviceId + "/status").c_str(), "online", true);
+      mqttClient.publish((String("geappliances/") + savedDeviceId + "/status").c_str(), "online", true);
     }
     else {
       Serial.println("failed, rc=" + String(mqttClient.state()) + " will try again in 1 second");
