@@ -10,55 +10,49 @@ const char WIFI_HTML[] PROGMEM = R"=====(
     <title>WiFi Configuration</title>
     %META_REFRESH%
     <style>
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: #1e1e2e; /* Mocha Base */
-            color: #cdd6f4;      /* Mocha Text */
-            margin: 0; padding: 20px;
-            display: flex; justify-content: center; align-items: flex-start;
-            min-height: 100vh; box-sizing: border-box;
-        }
-        .card {
-            background: #181825; /* Mocha Mantle */
-            border-radius: 12px;
-            padding: 30px; width: 100%; max-width: 500px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            border: 1px solid #313244; /* Mocha Surface0 */
-        }
-        h1, h2 { color: #f5c2e7; margin-top: 0; font-weight: 600; text-align: center; }
-        p.subtitle { color: #a6adc8; text-align: center; font-size: 15px; margin-bottom: 30px; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+        .card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; }
+        h2 { color: #f5c2e7; margin-top: 0; margin-bottom: 20px; font-weight: 600; text-align: center; }
         label { display: block; margin-bottom: 8px; color: #a6adc8; font-size: 14px; }
-        select, input[type='text'], input[type='password'], input[type='number'] {
-            width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 6px;
-            border: 1px solid #45475a; background: #313244;
-            color: #cdd6f4; font-size: 16px; box-sizing: border-box;
-        }
+        select, input[type='text'], input[type='password'], input[type='number'] { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #45475a; background: #313244; color: #cdd6f4; font-size: 16px; box-sizing: border-box; }
         select:focus, input:focus { outline: none; border-color: #f5c2e7; }
-        .btn {
-            display: flex; align-items: center; justify-content: center; text-decoration: none;
-            width: 100%; padding: 14px; border-radius: 8px; color: #11111b;
-            font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s, background 0.2s;
-            margin-bottom: 15px; border: none; box-sizing: border-box;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: #89b4fa; }
-        .btn-primary:hover { background: #b4befe; }
-        .btn-secondary { background: #a6e3a1; }
-        .btn-secondary:hover { background: #94e2d5; }
+        button, .btn { display: flex; align-items: center; justify-content: center; text-decoration: none; width: 100%; padding: 12px; background: #cba6f7; border: none; border-radius: 6px; color: #11111b; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-bottom: 15px; box-sizing: border-box; }
+        button:hover, .btn-primary:hover { background: #f5c2e7; }
+        .btn-secondary { background: #89b4fa; }
+        .btn-secondary:hover { background: #b4befe; }
         .section-title { color: #89b4fa; font-size: 18px; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px solid #313244; padding-bottom: 5px; }
         .net-list { margin-bottom: 20px; max-height: 150px; overflow-y: auto; border: 1px solid #313244; border-radius: 6px; padding: 10px; background: #11111b; }
         .net-item { display: flex; justify-content: space-between; padding: 8px; cursor: pointer; border-bottom: 1px solid #1e1e2e; }
         .net-item:last-child { border-bottom: none; }
         .net-item:hover { background: #313244; color: #f5c2e7; }
+        .footer { margin-top: 25px; margin-bottom: 0; font-size: 13px; color: #6c7086; text-align: center; }
+        .password-wrapper { position: relative; display: block; margin-bottom: 20px; }
+        .password-wrapper input[type='password'], .password-wrapper input[type='text'] { padding-right: 40px; margin-bottom: 0; }
+        .password-wrapper .toggle-password { position: absolute; right: 12px; top: 12px; cursor: pointer; color: #a6adc8; user-select: none; display: flex; align-items: center; justify-content: center; height: 20px; width: 20px; transition: color 0.2s; }
+        .password-wrapper .toggle-password:hover { color: #cdd6f4; }
     </style>
     <script>
     function selectSSID(ssid) { document.getElementById('ssid').value = ssid; }
+    function togglePwd(id, el) {
+        var eyeSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+        var eyeOffSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+        var input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+            el.innerHTML = eyeOffSvg;
+        } else {
+            input.type = "password";
+            el.innerHTML = eyeSvg;
+        }
+    }
     </script>
 </head>
 <body>
     <div class="card">
-        <h1>WiFi Settings</h1>
-        <p class="subtitle">Connect to network</p>
+        <h2 style="margin-bottom: 5px;">Home Assistant Adapter</h2>
+        <p style="text-align: center; color: #a6adc8; margin-top: 0; margin-bottom: 20px; font-size: 14px;">Version 1.0.0</p>
+        
+        <div class='section-title' style='margin-top: 0;'>Wi-Fi Connection</div>
         
         <div style='display: flex; justify-content: space-between; align-items: center;'>
             <label style='margin-bottom: 0;'>Select Network</label>
@@ -74,11 +68,15 @@ const char WIFI_HTML[] PROGMEM = R"=====(
             <input type="text" id="ssid" name="ssid" required placeholder="Network Name">
             
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Leave blank if open">
+            <div class='password-wrapper'>
+                <input type="password" id="password" name="password" placeholder="Leave blank if open">
+                <span class='toggle-password' onclick='togglePwd("password", this)'><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
+            </div>
             
-            <button type="submit" class="btn btn-primary">Save & Connect</button>
+            <button type="submit">Save & Connect</button>
         </form>
-        <a href="/" class="btn btn-secondary">Back</a>
+        <a href="/" class="btn btn-secondary" style="margin-bottom: 0;">Back to Dashboard</a>
+        <p class="footer"><a href="https://github.com/nicholaswilde/home-assistant-adapter" target="_blank" style="color: #89b4fa; text-decoration: none;">GitHub</a></p>
     </div>
 </body>
 </html>
