@@ -2,8 +2,15 @@
 #include <Arduino.h>
 #include "wifi_manager.h"
 #include "Config.h"
+#include <Preferences.h>
 
 static PubSubClient mqttClient(getWifiClient());
+
+static String savedMqttServer;
+static String savedDeviceId;
+static String savedMqttUser;
+static String savedMqttPass;
+static String savedMqttTopicPath;
 
 PubSubClient& getMqttClient() {
   return mqttClient;
@@ -11,7 +18,17 @@ PubSubClient& getMqttClient() {
 
 void configureMqtt()
 {
-  mqttClient.setServer(mqtt_server, mqtt_server_port);
+  Preferences prefs;
+  prefs.begin("wifi", true);
+  savedMqttServer = prefs.isKey("mqtt_server") ? prefs.getString("mqtt_server") : String(mqtt_server);
+  uint16_t savedMqttPort = prefs.isKey("mqtt_port") ? prefs.getUShort("mqtt_port") : mqtt_server_port;
+  savedDeviceId = prefs.isKey("device_id") ? prefs.getString("device_id") : String(deviceId);
+  savedMqttUser = prefs.isKey("mqtt_user") ? prefs.getString("mqtt_user") : String(mqttUser);
+  savedMqttPass = prefs.isKey("mqtt_pass") ? prefs.getString("mqtt_pass") : String(mqttPassword);
+  savedMqttTopicPath = prefs.isKey("mqtt_topic") ? prefs.getString("mqtt_topic") : String(mqtt_topic_path);
+  prefs.end();
+
+  mqttClient.setServer(savedMqttServer.c_str(), savedMqttPort);
 }
 
 void connectToMqtt(HomeAssistantBridge& bridge)
@@ -35,14 +52,14 @@ void connectToMqtt(HomeAssistantBridge& bridge)
 
     Serial.print("Attempting MQTT connection...");
 
-    if(mqttClient.connect(deviceId, mqttUser, mqttPassword)) {
+    if(mqttClient.connect(savedDeviceId.c_str(), savedMqttUser.c_str(), savedMqttPass.c_str())) {
       Serial.println("connected");
       digitalWrite(LED_MQTT, HIGH);
 
-      String discoveryTopic = String("homeassistant/sensor/") + String(deviceId) + String("/config");
-      String payload = String("{\"name\": \"") + String(deviceId) + String("\", \"state_topic\": \"") + String(deviceId) + String("/status\", \"unique_id\": \"") + String(deviceId) + String("\", \"device\": {\"identifiers\": [\"") + String(deviceId) + String("\"], \"name\": \"") + String(deviceId) + String("\"}}");
+      String discoveryTopic = savedMqttTopicPath + "/sensor/" + savedDeviceId + "/config";
+      String payload = String("{\"name\": \"") + savedDeviceId + String("\", \"state_topic\": \"") + savedDeviceId + String("/status\", \"unique_id\": \"") + savedDeviceId + String("\", \"device\": {\"identifiers\": [\"") + savedDeviceId + String("\"], \"name\": \"") + savedDeviceId + String("\"}}");
       mqttClient.publish(discoveryTopic.c_str(), payload.c_str(), true);
-      mqttClient.publish((String(deviceId) + "/status").c_str(), "online", true);
+      mqttClient.publish((savedDeviceId + "/status").c_str(), "online", true);
     }
     else {
       Serial.println("failed, rc=" + String(mqttClient.state()) + " will try again in 1 second");

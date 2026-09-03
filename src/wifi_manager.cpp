@@ -2,6 +2,7 @@
 #include "landing_html.h"
 #include "wifi_html.h"
 #include "settings_html.h"
+#include "Config.h"
 
 const byte DNS_PORT = 53;
 
@@ -115,13 +116,14 @@ void WifiManager::setupRoutes() {
         if (newSsid.length() > 0) {
             _preferences.putString("ssid", newSsid);
             _preferences.putString("password", newPass);
-            String resHtml = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Saved</title><style>";
-            resHtml += "body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }";
+            String resHtml = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Saved</title>";
+            resHtml += "<meta http-equiv='refresh' content='10;url=/'>";
+            resHtml += "<style>body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }";
             resHtml += ".card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; text-align: center; }";
             resHtml += "h2 { color: #a6e3a1; margin-top: 0; margin-bottom: 20px; }";
             resHtml += "p { color: #cdd6f4; }";
             resHtml += "</style></head><body><div class='card'>";
-            resHtml += "<h2>Configuration Saved</h2><p>Device is rebooting to apply changes...</p>";
+            resHtml += "<h2>Configuration Saved</h2><p>Device is rebooting to apply changes. You will be redirected shortly.</p>";
             resHtml += "</div></body></html>";
             _server.send(200, "text/html", resHtml);
             delay(1000);
@@ -133,26 +135,49 @@ void WifiManager::setupRoutes() {
     });
     
     _server.on("/settings", HTTP_POST, [this]() {
-        // Handle saving Settings logic here
-        _server.sendHeader("Location", "/", true);
-        _server.send(302, "text/plain", "");
+        if (_server.hasArg("deviceId")) _preferences.putString("device_id", _server.arg("deviceId"));
+        if (_server.hasArg("mqtt_server")) _preferences.putString("mqtt_server", _server.arg("mqtt_server"));
+        if (_server.hasArg("mqtt_port")) _preferences.putUShort("mqtt_port", _server.arg("mqtt_port").toInt());
+        if (_server.hasArg("mqtt_user")) _preferences.putString("mqtt_user", _server.arg("mqtt_user"));
+        if (_server.hasArg("mqtt_password")) _preferences.putString("mqtt_pass", _server.arg("mqtt_password"));
+        if (_server.hasArg("mqtt_topic_path")) _preferences.putString("mqtt_topic", _server.arg("mqtt_topic_path"));
+        
+        String resHtml = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Saved</title>";
+        resHtml += "<meta http-equiv='refresh' content='10;url=/'>";
+        resHtml += "<style>body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }";
+        resHtml += ".card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; text-align: center; }";
+        resHtml += "h2 { color: #a6e3a1; margin-top: 0; margin-bottom: 20px; }</style></head><body><div class='card'>";
+        resHtml += "<h2>Settings Saved</h2><p>Device is rebooting to apply changes. You will be redirected shortly.</p>";
+        resHtml += "</div></body></html>";
+        _server.send(200, "text/html", resHtml);
+        delay(1000);
+        ESP.restart();
     });
 
     _server.on("/restart", HTTP_GET, [this]() {
         String resHtml = "<!DOCTYPE html><html lang='en'><head>";
         resHtml += "<meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+        resHtml += "<meta http-equiv='refresh' content='10;url=/'>";
         resHtml += "<title>Restarting...</title><style>";
         resHtml += "body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }";
         resHtml += ".card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; text-align: center; }";
         resHtml += "h2 { color: #f38ba8; margin-top: 0; margin-bottom: 20px; }";
         resHtml += "p { color: #cdd6f4; }";
         resHtml += "</style></head><body><div class='card'>";
-        resHtml += "<h2>Restarting</h2><p>Device is rebooting...</p>";
+        resHtml += "<h2>Restarting</h2><p>Device is rebooting... You will be redirected shortly.</p>";
         resHtml += "</div></body></html>";
         _server.send(200, "text/html", resHtml);
         delay(1000);
         ESP.restart();
     });
+
+    // Captive portal probes
+    _server.on("/generate_204", HTTP_GET, [this]() { handleRoot(); });
+    _server.on("/gen_204", HTTP_GET, [this]() { handleRoot(); });
+    _server.on("/hotspot-detect.html", HTTP_GET, [this]() { handleRoot(); });
+    _server.on("/canonical.html", HTTP_GET, [this]() { handleRoot(); });
+    _server.on("/success.txt", HTTP_GET, [this]() { handleRoot(); });
+    _server.on("/ncsi.txt", HTTP_GET, [this]() { handleRoot(); });
 
     // Catch all for Captive Portal
     _server.onNotFound([this]() { handleNotFound(); });
@@ -194,7 +219,14 @@ void WifiManager::handleWifi() {
 }
 
 void WifiManager::handleSettings() {
-    _server.send(200, "text/html", SETTINGS_HTML);
+    String html = String(SETTINGS_HTML);
+    html.replace("%DEVICE_ID%", _preferences.isKey("device_id") ? _preferences.getString("device_id") : String(deviceId));
+    html.replace("%MQTT_SERVER%", _preferences.isKey("mqtt_server") ? _preferences.getString("mqtt_server") : String(mqtt_server));
+    html.replace("%MQTT_PORT%", String(_preferences.isKey("mqtt_port") ? _preferences.getUShort("mqtt_port") : mqtt_server_port));
+    html.replace("%MQTT_USER%", _preferences.isKey("mqtt_user") ? _preferences.getString("mqtt_user") : String(mqttUser));
+    html.replace("%MQTT_PASSWORD%", _preferences.isKey("mqtt_pass") ? _preferences.getString("mqtt_pass") : String(mqttPassword));
+    html.replace("%MQTT_TOPIC_PATH%", _preferences.isKey("mqtt_topic") ? _preferences.getString("mqtt_topic") : String(mqtt_topic_path));
+    _server.send(200, "text/html", html);
 }
 
 void WifiManager::handleNotFound() {
