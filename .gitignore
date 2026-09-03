@@ -8,3 +8,5 @@ build
 .codegraph/
 .cache/
 .env
+lcov.info
+lcov_raw.info
