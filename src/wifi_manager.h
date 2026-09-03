@@ -34,7 +34,7 @@ private:
     
     String _savedSsid;
     String _savedPassword;
-    const char* _apName;
+    String _apName;
 
     void startAP();
     void setupRoutes();

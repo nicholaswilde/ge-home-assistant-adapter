@@ -11,7 +11,10 @@ void WifiManager::begin(const char* ssid, const char* password, const char* apNa
     _preferences.begin("wifi", false);
     _savedSsid = _preferences.getString("ssid", ssid ? ssid : "");
     _savedPassword = _preferences.getString("password", password ? password : "");
-    _apName = apName;
+    
+    String mac = WiFi.macAddress();
+    mac.replace(":", "");
+    _apName = "ha-adapter-" + mac.substring(mac.length() - 4);
     
     _state = WIFI_STATE_CONNECTING;
     _connectStartTime = millis();
@@ -69,7 +72,7 @@ void WifiManager::startAP() {
     IPAddress apIP(192, 168, 4, 1);
     WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
     
-    WiFi.softAP(_apName);
+    WiFi.softAP(_apName.c_str());
     delay(100);
     
     // Route all DNS requests to AP IP (Captive Portal)
