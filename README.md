@@ -45,11 +45,38 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/nicholaswilde/ge-home-as
 
 In-depth instructions can be found in the [Getting Started](docs/getting-started.md) guide.
 
-## :globe_with_meridians: Web Interface & Portal
+## :globe_with_meridians: Web Interface & Configuration
 
-The firmware provides a Catppuccin-themed web interface for configuration and maintenance:
-- **Captive Portal / Wi-Fi Setup (`/wifi`)**: Connect to the device AP (e.g. `ge-ha-adapter-XXXX`) to scan networks and configure Wi-Fi credentials.
-- **Device & MQTT Settings (`/settings`)**: Configure the MQTT Device ID, broker IP/port, username, masked password (with show/hide toggle), and base topic path. Values persist in NVS and fall back to `Config.h` defaults.
+When unconfigured or unable to connect to a saved Wi-Fi network, the adapter broadcasts a Wi-Fi Access Point (AP) named `ge-ha-adapter-XXXX` (where `XXXX` represents the last 4 characters of the device's MAC address).
+
+### Initial Wi-Fi & MQTT Setup
+
+1. **Connect to the Access Point:**
+   - On your phone or computer, scan for available Wi-Fi networks and connect to `ge-ha-adapter-XXXX`.
+   - The network is open and requires no password.
+   - A captive portal popup should open automatically. If not, open a web browser and navigate to `http://192.168.4.1`.
+
+2. **Configure Wi-Fi Credentials (`/wifi`):**
+   - Click **Wi-Fi Connection** on the dashboard (or visit `http://192.168.4.1/wifi`).
+   - Select your Wi-Fi network from the scanned list (or click **Refresh List** / enter the SSID manually).
+   - Enter your Wi-Fi password. Use the eye icon to toggle visibility and confirm correctness.
+   - Click **Save & Connect**. The adapter will store your network credentials in non-volatile storage (NVS) and restart.
+
+3. **Configure MQTT & Device Settings (`/settings`):**
+   - Once connected to your local network, browse to the adapter's assigned local IP (or navigate to `http://192.168.4.1/settings` while still connected to the AP).
+   - Configure your parameters:
+     - **MQTT Device ID**: Identifier used in topics and Home Assistant discovery (defaults to device ID in `Config.h`).
+     - **MQTT Server**: IP address or hostname of your MQTT broker (e.g. Home Assistant Mosquitto broker).
+     - **MQTT Port**: Port of your MQTT broker (default: `1883`).
+     - **MQTT Username**: Username for MQTT authentication.
+     - **MQTT Password**: Password for MQTT authentication (toggle visibility with the eye icon).
+   - Click **Save Settings & Reboot** to save the values to NVS and restart the device.
+
+### Web Interface Features
+
+The onboard Catppuccin-themed web interface provides:
+- **Captive Portal / Wi-Fi Setup (`/wifi`)**: Connect to the device AP to scan networks and configure Wi-Fi credentials.
+- **Device & MQTT Settings (`/settings`)**: Configure MQTT broker, port, credentials, and device ID. Values persist in NVS and fall back to `Config.h` defaults.
 - **OTA Firmware Update (`/update`)**: Modern drag-and-drop file upload zone for `.bin` firmware flashing.
 - **Device Reboot (`/restart`)**: Restart the adapter with automatic redirect back to dashboard upon reconnecting.
 
