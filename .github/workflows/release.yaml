@@ -31,6 +31,8 @@ jobs:
 
       - name: "Setup Task"
         uses: arduino/setup-task@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version: 3.x
 
@@ -58,7 +60,7 @@ jobs:
           cp config/Certificate.h.sample config/Certificate.h
 
       - name: "Build PlatformIO Project ${{ matrix.env }}"
-        run: pio run --environment ${{ matrix.env }}
+        run: task build PIO_ENV=${{ matrix.env }}
 
       - name: "Zip binaries and documentation"
         run: |
