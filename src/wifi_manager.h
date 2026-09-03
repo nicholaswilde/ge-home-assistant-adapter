@@ -32,6 +32,7 @@ private:
     DNSServer _dnsServer;
     Preferences _preferences;
     
+    String _cachedNetworksHTML;
     String _savedSsid;
     String _savedPassword;
     String _apName;

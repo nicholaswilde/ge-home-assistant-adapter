@@ -88,6 +88,23 @@ void WifiManager::setupRoutes() {
     _server.on("/wifi", HTTP_GET, [this]() { handleWifi(); });
     _server.on("/settings", HTTP_GET, [this]() { handleSettings(); });
     
+    _server.on("/wifi/scan", HTTP_GET, [this]() {
+        WiFi.scanNetworks(true, false, false, 150);
+        String html = "<!DOCTYPE html><html><head>";
+        html += "<meta http-equiv='refresh' content='3;url=/wifi'>";
+        html += "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+        html += "<title>Scanning...</title>";
+        html += "<style>";
+        html += "body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }";
+        html += ".card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; text-align: center; }";
+        html += "h2 { color: #f5c2e7; margin-top: 0; }";
+        html += "p { color: #a6adc8; }";
+        html += "</style></head><body>";
+        html += "<div class='card'><h2>Scanning for Wi-Fi...</h2><p>Please wait while we refresh the network list.</p></div>";
+        html += "</body></html>";
+        _server.send(200, "text/html", html);
+    });
+    
     _server.on("/wifi", HTTP_POST, [this]() {
         String newSsid = _server.arg("ssid");
         String newPass = _server.arg("password");
@@ -118,7 +135,34 @@ void WifiManager::handleRoot() {
 }
 
 void WifiManager::handleWifi() {
-    _server.send(200, "text/html", WIFI_HTML);
+    int16_t scanStatus = WiFi.scanComplete();
+    if (scanStatus >= 0) {
+        _cachedNetworksHTML = "";
+        for (int i = 0; i < scanStatus; ++i) {
+            String ssidName = WiFi.SSID(i);
+            int32_t rssi = WiFi.RSSI(i);
+            _cachedNetworksHTML += "<div class='net-item' onclick='selectSSID(\"" + ssidName + "\")'>";
+            _cachedNetworksHTML += "<span>" + ssidName + "</span>";
+            _cachedNetworksHTML += "<span style='color: #a6adc8; font-size: 12px;'>" + String(rssi) + " dBm</span>";
+            _cachedNetworksHTML += "</div>";
+        }
+        WiFi.scanDelete();
+    } else if (scanStatus == WIFI_SCAN_FAILED) {
+        WiFi.scanNetworks(true, false, false, 150);
+        if (_cachedNetworksHTML.length() == 0 || _cachedNetworksHTML.indexOf("Scanning in progress") != -1) {
+            _cachedNetworksHTML = "<div class='net-item' style='color: #a6adc8;'>Scanning in progress... Please refresh.</div>";
+        }
+    }
+
+    String html = String(WIFI_HTML);
+    if (scanStatus == WIFI_SCAN_RUNNING || scanStatus == WIFI_SCAN_FAILED) {
+        html.replace("%META_REFRESH%", "<meta http-equiv='refresh' content='3'>");
+    } else {
+        html.replace("%META_REFRESH%", "");
+    }
+    
+    html.replace("%NETWORK_LIST%", _cachedNetworksHTML);
+    _server.send(200, "text/html", html);
 }
 
 void WifiManager::handleSettings() {
