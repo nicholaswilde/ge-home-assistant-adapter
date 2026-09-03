@@ -21,9 +21,14 @@ echo "Target version: $NEW_TAG"
 echo "Running pre-release validation (test)..."
 task test
 
-echo "Validation passed. Bumping version.txt..."
+echo "Validation passed. Bumping version.txt and HTML pages..."
 echo "$NEW_TAG" > version.txt
-git add version.txt
+
+# Update version in HTML files
+sed -i "s/Version $CURRENT_VER/Version $NEW_VER/g" src/*_html.h
+sed -i "s/Version v$CURRENT_VER/Version $NEW_TAG/g" src/*_html.h
+
+git add version.txt src/*_html.h
 git commit -m "chore(release): bump version to $NEW_TAG"
 
 echo "Checking git status..."

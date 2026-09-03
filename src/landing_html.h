@@ -25,7 +25,7 @@ const char LANDING_HTML[] PROGMEM = R"=====(
 <body>
     <div class="card">
         <h2 style="margin-bottom: 5px;">Home Assistant Adapter</h2>
-        <p style="text-align: center; color: #a6adc8; margin-top: 0; margin-bottom: 20px; font-size: 14px;">Version 1.0.0</p>
+        <p style="text-align: center; color: #a6adc8; margin-top: 0; margin-bottom: 20px; font-size: 14px;">Version v0.1.0</p>
         
         <a href="/wifi" class="btn btn-primary">Wi-Fi Connection</a>
         <a href="/settings" class="btn btn-secondary">Settings</a>

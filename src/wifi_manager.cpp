@@ -32,6 +32,8 @@ void WifiManager::update() {
         case WIFI_STATE_CONNECTING:
             if (WiFi.status() == WL_CONNECTED) {
                 _state = WIFI_STATE_CONNECTED;
+                Serial.println("Connected to: " + _savedSsid);
+                Serial.println("IP Address: " + WiFi.localIP().toString());
                 // Once connected, start the web server to handle OTA and other routes
                 setupRoutes();
                 _server.begin();
@@ -74,6 +76,8 @@ void WifiManager::startAP() {
     
     WiFi.softAP(_apName.c_str());
     delay(100);
+    
+    Serial.println("Captive Portal Started. SSID: " + _apName);
     
     // Route all DNS requests to AP IP (Captive Portal)
     _dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
@@ -225,7 +229,7 @@ Client& getWifiClient() {
 }
 
 void connectToWifi() {
-    if (WiFi.status() == WL_CONNECTED) {
+    if (WiFi.status() == WL_CONNECTED || wifiManager.getState() == WIFI_STATE_AP_MODE) {
         return;
     }
     
