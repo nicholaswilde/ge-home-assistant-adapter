@@ -24,6 +24,9 @@ Boundaries: code/commits/PRs written normal.
 - NEVER create, close, or modify GitHub issues on the upstream repository (`geappliances/home-assistant-adapter`).
 - ALWAYS target the user's fork (`nicholaswilde/ge-home-assistant-adapter`) for any GitHub operations. If using the `gh` CLI, explicitly append `--repo nicholaswilde/ge-home-assistant-adapter` to guarantee the correct target.
 - ALWAYS pipe `gh` commands to `cat` (e.g. `gh issue list | cat`, `gh issue view 1 | cat`) to bypass interactive pagers and prompt hangs.
+- **Issue Creation Constraints:**
+  - **Features:** Always use the title format `[feat]: <description>` and add the `enhancement` label (e.g., `--label enhancement`).
+  - **Bugs:** Always use the title format `[bug]: <description>` and add the `bug` label (e.g., `--label bug`).
 - When addressing GitHub issues, always include an issue-closing keyword in the commit message (e.g., `Fixes #X` or `Closes #X`) to automatically close the issue upon push.
 
 # Project Rules & Guidelines
