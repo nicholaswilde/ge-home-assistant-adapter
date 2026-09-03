@@ -4,11 +4,9 @@
 #include <Update.h>
 #include "Config.h"
 
-static WebServer server(80);
-
-void configureSettings()
+void configureSettings(WebServer& server)
 {
-  server.on("/update", HTTP_GET, []() {
+  server.on("/update", HTTP_GET, [&server]() {
 #ifdef OTA_PASSWORD
     if (!server.authenticate("admin", OTA_PASSWORD)) {
       return server.requestAuthentication();
@@ -23,7 +21,7 @@ void configureSettings()
     );
   });
 
-  server.on("/update", HTTP_POST, []() {
+  server.on("/update", HTTP_POST, [&server]() {
 #ifdef OTA_PASSWORD
     if (!server.authenticate("admin", OTA_PASSWORD)) {
       return server.requestAuthentication();
@@ -33,7 +31,7 @@ void configureSettings()
     server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
     delay(1000);
     ESP.restart();
-  }, []() {
+  }, [&server]() {
 #ifdef OTA_PASSWORD
     if (!server.authenticate("admin", OTA_PASSWORD)) {
       return;
@@ -63,11 +61,10 @@ void configureSettings()
     }
   });
 
-  server.begin();
-  Serial.println("HTTP update server started");
+  Serial.println("HTTP update server routes registered");
 }
 
 void loopSettings()
 {
-  server.handleClient();
+  // Deprecated, handled by wifiManager.update()
 }

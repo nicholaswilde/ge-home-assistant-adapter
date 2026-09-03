@@ -1,4 +1,5 @@
 #pragma once
+#include <WebServer.h>
 
-void configureSettings();
+void configureSettings(WebServer& server);
 void loopSettings();
