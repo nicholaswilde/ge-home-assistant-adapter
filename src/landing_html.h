@@ -17,6 +17,8 @@ const char LANDING_HTML[] PROGMEM = R"=====(
         .btn-primary:hover { background: #f5c2e7; }
         .btn-secondary { background: #89b4fa; }
         .btn-secondary:hover { background: #b4befe; }
+        .btn-danger { background: #f38ba8; color: #11111b; }
+        .btn-danger:hover { background: #eba0ac; }
         .footer { margin-top: 25px; margin-bottom: 0; font-size: 13px; color: #6c7086; text-align: center; }
     </style>
 </head>
@@ -28,6 +30,7 @@ const char LANDING_HTML[] PROGMEM = R"=====(
         <a href="/wifi" class="btn btn-primary">Wi-Fi Connection</a>
         <a href="/settings" class="btn btn-secondary">Settings</a>
         <a href="/update" class="btn btn-secondary">OTA Update</a>
+        <a href="/restart" class="btn btn-danger">Restart Device</a>
 
         <p class="footer"><a href="https://github.com/nicholaswilde/home-assistant-adapter" target="_blank" style="color: #89b4fa; text-decoration: none;">GitHub</a></p>
     </div>

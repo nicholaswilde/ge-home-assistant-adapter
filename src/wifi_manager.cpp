@@ -134,6 +134,22 @@ void WifiManager::setupRoutes() {
         _server.send(302, "text/plain", "");
     });
 
+    _server.on("/restart", HTTP_GET, [this]() {
+        String resHtml = "<!DOCTYPE html><html lang='en'><head>";
+        resHtml += "<meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+        resHtml += "<title>Restarting...</title><style>";
+        resHtml += "body { font-family: 'Inter', system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }";
+        resHtml += ".card { background: #181825; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 1px solid #313244; text-align: center; }";
+        resHtml += "h2 { color: #f38ba8; margin-top: 0; margin-bottom: 20px; }";
+        resHtml += "p { color: #cdd6f4; }";
+        resHtml += "</style></head><body><div class='card'>";
+        resHtml += "<h2>Restarting</h2><p>Device is rebooting...</p>";
+        resHtml += "</div></body></html>";
+        _server.send(200, "text/html", resHtml);
+        delay(1000);
+        ESP.restart();
+    });
+
     // Catch all for Captive Portal
     _server.onNotFound([this]() { handleNotFound(); });
 }
