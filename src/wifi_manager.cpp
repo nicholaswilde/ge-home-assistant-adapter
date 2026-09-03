@@ -15,7 +15,7 @@ void WifiManager::begin(const char* ssid, const char* password, const char* apNa
     
     String mac = WiFi.macAddress();
     mac.replace(":", "");
-    _apName = "ha-adapter-" + mac.substring(mac.length() - 4);
+    _apName = "ge-ha-adapter-" + mac.substring(mac.length() - 4);
     
     _state = WIFI_STATE_CONNECTING;
     _connectStartTime = millis();

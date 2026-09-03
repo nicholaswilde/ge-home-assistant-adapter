@@ -44,7 +44,7 @@ In-depth instructions can be found in the [Getting Started](docs/getting-started
 ## :globe_with_meridians: Web Interface & Portal
 
 The firmware provides a Catppuccin-themed web interface for configuration and maintenance:
-- **Captive Portal / Wi-Fi Setup (`/wifi`)**: Connect to the device AP (e.g. `ha-adapter-XXXX`) to scan networks and configure Wi-Fi credentials.
+- **Captive Portal / Wi-Fi Setup (`/wifi`)**: Connect to the device AP (e.g. `ge-ha-adapter-XXXX`) to scan networks and configure Wi-Fi credentials.
 - **Device & MQTT Settings (`/settings`)**: Configure the MQTT Device ID, broker IP/port, username, masked password (with show/hide toggle), and base topic path. Values persist in NVS and fall back to `Config.h` defaults.
 - **OTA Firmware Update (`/update`)**: Modern drag-and-drop file upload zone for `.bin` firmware flashing.
 - **Device Reboot (`/restart`)**: Restart the adapter with automatic redirect back to dashboard upon reconnecting.
