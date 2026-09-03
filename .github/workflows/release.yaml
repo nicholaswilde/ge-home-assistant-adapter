@@ -62,7 +62,7 @@ jobs:
 
       - name: "Zip binaries and documentation"
         run: |
-          zip -j ${{ env.BASENAME }}.zip .pio/build/${{ matrix.env }}/*.bin README.md LICENSE version.txt config/Config.h.sample config/Certificate.h.sample
+          zip -j ${{ env.BASENAME }}.zip .pio/build/${{ matrix.env }}/*.bin README.md LICENSE version.txt config/Config.h.sample config/Certificate.h.sample scripts/flash.sh
 
       - name: "Upload ${{ matrix.env }} artifacts"
         uses: actions/upload-artifact@v4

@@ -14,6 +14,7 @@ tasks:
     cmds:
       - '[ -f config/Config.h ] || cp config/Config.h.sample config/Config.h'
       - '[ -f config/Certificate.h ] || cp config/Certificate.h.sample config/Certificate.h'
+      - '[ -f .env ] || cp .env.example .env'
       - 'git config core.hooksPath .githooks'
 
 
@@ -29,7 +30,7 @@ tasks:
   install-toolchain:
     desc: Install the platformio toolchain manually
     cmds:
-      - ./script/install_toolchain.sh
+      - ./scripts/install_toolchain.sh
 
   build:
     desc: Build the firmware
@@ -41,6 +42,11 @@ tasks:
     desc: Upload/flash the firmware to the device
     cmds:
       - pio run -t upload -e {{.PIO_ENV}}
+
+  flash-release:
+    desc: Download and flash the latest GitHub release
+    cmds:
+      - ./scripts/flash.sh {{.PIO_ENV}}
 
   eau:
     desc: Erase flash and upload firmware
@@ -103,7 +109,7 @@ tasks:
   test:ci:
     desc: Run CI build script
     cmds:
-      - ./script/ci
+      - ./scripts/ci
 
   test:
     desc: Run all tests

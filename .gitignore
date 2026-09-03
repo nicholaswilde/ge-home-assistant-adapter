@@ -7,3 +7,4 @@ build
 **/Certificate.h
 .codegraph/
 .cache/
+.env

@@ -1,4 +1,4 @@
-# :shield: Home Assistant Adapter (C++) :robot:
+# :shield: GE Home Assistant Adapter (C++) :robot:
 
 [![task](https://img.shields.io/badge/Task-Enabled-brightgreen?style=for-the-badge&logo=task&logoColor=white)](https://taskfile.dev/#/)
 [![ci](https://img.shields.io/github/actions/workflow/status/nicholaswilde/ge-home-assistant-adapter/ci.yml?label=ci&style=for-the-badge&branch=main&logo=github-actions)](https://github.com/nicholaswilde/ge-home-assistant-adapter/actions/workflows/ci.yml)
@@ -9,12 +9,26 @@ Firmware for the ESP32C3-based adapter [available from FirstBuild](https://first
 
 The Home Assistant adapter consists of a
 [Xiao ESP32C3](https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/) and
-[carrier board](doc/schematic-v1.0.pdf) that breaks out the serial interface of
+[carrier board](docs/schematic-v1.0.pdf) that breaks out the serial interface of
 the Xiao to an RJ45 jack.
 
-See the [Compatibility List](doc/compatibility-list) for supported GE appliance models (cooking, dishwashers, dryers, washers, and water heaters).
+See the [Compatibility List](docs/compatibility-list) for supported GE appliance models (cooking, dishwashers, dryers, washers, and water heaters).
 
-## :hammer_and_wrench: Setup
+## :zap: Installation
+
+### Quick Install (Pre-compiled Binaries)
+
+You can flash the latest pre-compiled firmware directly from your terminal using the provided flash script. Connect your ESP32C3 via USB and run the command below. Replace `/dev/ttyACM0` with your actual serial port if different.
+
+```bash
+# Flash the adapter
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nicholaswilde/ge-home-assistant-adapter/main/scripts/flash.sh)" _ xiao_c3 /dev/ttyACM0
+```
+
+> [!WARNING]
+> Running a script directly from the internet with `bash -c "$(curl...)"` is a potential security risk. Always review the script's source code before executing it to ensure it is safe. You can view the script [here](https://github.com/nicholaswilde/ge-home-assistant-adapter/blob/main/scripts/flash.sh).
+
+## :hammer_and_wrench: Development Setup
 
 1. Install [PlatformIO](https://platformio.org/) and [go-task](https://taskfile.dev).
 2. Initialize the project:
@@ -25,7 +39,7 @@ See the [Compatibility List](doc/compatibility-list) for supported GE appliance 
 3. Edit `config/Config.h` with your WiFi credentials, MQTT configuration, and device ID.
 4. Edit `config/Certificate.h` to add your certificate (if any).
 
-In-depth instructions can be found in the [Getting Started](doc/getting-started.md) guide.
+In-depth instructions can be found in the [Getting Started](docs/getting-started.md) guide.
 
 ## :globe_with_meridians: Web Interface & Portal
 

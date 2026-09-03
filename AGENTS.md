@@ -37,4 +37,25 @@ Boundaries: code/commits/PRs written normal.
 
 ## Build & Initialization
 - **Configuration Setup**: ALWAYS run `task init` before building a fresh clone. This ensures required header files (`Config.h` and `Certificate.h`) are generated from their `.sample` templates. The build will fail with missing headers if this is skipped.
-- **PlatformIO Toolchain Workaround**: PlatformIO's package registry mirrors (specifically for the ESP32 RISC-V toolchain required by `seeed_xiao_esp32c3`) can be unreliable or unresponsive. To bypass this, `task build` executes `script/install_toolchain.sh` as a pre-build dependency. This script manually downloads and installs the toolchain from Espressif's GitHub releases, and `platformio.ini` uses a `symlink://` package source to force PlatformIO to use it.
+- **PlatformIO Toolchain Workaround**: PlatformIO's package registry mirrors (specifically for the ESP32 RISC-V toolchain required by `seeed_xiao_esp32c3`) can be unreliable or unresponsive. To bypass this, `task build` executes `scripts/install_toolchain.sh` as a pre-build dependency. This script manually downloads and installs the toolchain from Espressif's GitHub releases, and `platformio.ini` uses a `symlink://` package source to force PlatformIO to use it.
+## Product Vision & Hardware
+- **Role:** ESP32C3-based Home Assistant adapter firmware acting as a bridge between local serial devices and Home Assistant via MQTT.
+- **Hardware:** Seeed Studio XIAO ESP32C3 on a FirstBuild carrier board (D6/TX, D7/RX broken out to RJ45).
+- **LED Mappings:** D0 (Heartbeat `LED_HEARTBEAT`), D1 (MQTT `LED_MQTT`), D2 (WiFi `LED_WIFI`).
+
+## Tech Stack
+- **Build System:** PlatformIO with Arduino Framework (Espressif32 platform `^6.9.0`).
+- **Language:** C++11 (`-std=gnu11`) with strict warnings (`-Wall -Wextra -Werror`).
+- **Key Libraries:** `PubSubClient`, `NTPClient`, `home-assistant-bridge`, `WiFiManager`.
+
+## Development & Design Principles
+- **Reliability:** Firmware must be self-healing. Retries on connection loss; restart on persistent failures.
+- **Non-blocking Loop:** Main `loop()` must be non-blocking. Avoid `delay()`.
+- **State Feedback:** Heartbeat blinks at 1Hz. WiFi/MQTT LEDs are solid when connected, blinking while connecting.
+- **Logging:** Prefix serial output clearly (e.g., `[WIFI]`, `[MQTT]`, `[ERROR]`).
+- **MQTT Topics:** `homeassistant/sensor/<device_id>/config` (discovery), `<device_id>/status`, `<device_id>/command`.
+- **Payloads:** Use compact JSON.
+
+## Code Style
+- **Standard:** Follow Google C++ Style Guide principles (2-space indent, 80-char limit).
+- **Naming:** `PascalCase` for types/classes/functions, `snake_case` for variables, `kPascalCase` for constants.

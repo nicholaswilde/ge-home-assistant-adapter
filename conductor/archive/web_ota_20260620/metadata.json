@@ -1,8 +1,0 @@
-{
-  "track_id": "web_ota_20260620",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-06-20T09:22:04Z",
-  "updated_at": "2026-06-20T09:22:04Z",
-  "description": "Implement Web OTA firmware updates"
-}

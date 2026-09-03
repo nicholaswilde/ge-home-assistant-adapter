@@ -1,8 +1,0 @@
-{
-  "track_id": "wifi_manager_20260620",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-06-20T09:18:53Z",
-  "updated_at": "2026-06-20T09:18:53Z",
-  "description": "Implement WiFi Manager for dynamic WiFi configuration"
-}

@@ -48,4 +48,4 @@ jobs:
         run: uv tool install platformio --with pip
 
       - name: Build with PlatformIO
-        run: ./script/ci
+        run: ./scripts/ci
