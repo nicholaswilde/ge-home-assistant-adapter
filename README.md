@@ -1,7 +1,7 @@
 # :shield: Home Assistant Adapter (C++) :robot:
 
 [![task](https://img.shields.io/badge/Task-Enabled-brightgreen?style=for-the-badge&logo=task&logoColor=white)](https://taskfile.dev/#/)
-[![ci](https://img.shields.io/github/actions/workflow/status/nicholaswilde/home-assistant-adapter/ci.yml?label=ci&style=for-the-badge&branch=main&logo=github-actions)](https://github.com/nicholaswilde/home-assistant-adapter/actions/workflows/ci.yml)
+[![ci](https://img.shields.io/github/actions/workflow/status/nicholaswilde/ge-home-assistant-adapter/ci.yml?label=ci&style=for-the-badge&branch=main&logo=github-actions)](https://github.com/nicholaswilde/ge-home-assistant-adapter/actions/workflows/ci.yml)
 
 Firmware for the ESP32C3-based adapter [available from FirstBuild](https://firstbuild.com/inventions/home-assistant-adapter/) to connect GE appliances locally to Home Assistant via MQTT.
 

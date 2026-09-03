@@ -60,7 +60,7 @@ const char SETTINGS_HTML[] PROGMEM = R"=====(
             <button type="submit">Save Settings & Reboot</button>
         </form>
         <a href="/" class="btn btn-secondary" style="margin-bottom: 0;">Back to Dashboard</a>
-        <p class="footer"><a href="https://github.com/nicholaswilde/home-assistant-adapter" target="_blank" style="color: #89b4fa; text-decoration: none;">GitHub</a></p>
+        <p class="footer"><a href="https://github.com/nicholaswilde/ge-home-assistant-adapter" target="_blank" style="color: #89b4fa; text-decoration: none;">GitHub</a></p>
     </div>
     
     <script>

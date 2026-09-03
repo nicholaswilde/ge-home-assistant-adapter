@@ -74,9 +74,9 @@ def main():
         
     if ".." in git_range:
         url_range = git_range.replace("..", "...")
-        summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/home-assistant-adapter/compare/{url_range}\n")
+        summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/ge-home-assistant-adapter/compare/{url_range}\n")
     else:
-        summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/home-assistant-adapter/commits/{latest}\n")
+        summary.append(f"**Full Changelog**: https://github.com/nicholaswilde/ge-home-assistant-adapter/commits/{latest}\n")
     
     notes = "\n".join(summary)
     
@@ -85,7 +85,7 @@ def main():
         
     print(f"Updating draft release for {latest}...")
     try:
-        url = run_cmd(f"gh release edit {latest} --draft -F /tmp/release_notes.md --repo nicholaswilde/home-assistant-adapter")
+        url = run_cmd(f"gh release edit {latest} --draft -F /tmp/release_notes.md --repo nicholaswilde/ge-home-assistant-adapter")
         print(f"Draft release updated: {url}")
     except Exception as e:
         print(f"Failed to update release: {e}")

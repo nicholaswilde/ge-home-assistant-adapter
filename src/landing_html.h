@@ -32,7 +32,7 @@ const char LANDING_HTML[] PROGMEM = R"=====(
         <a href="/update" class="btn btn-secondary">OTA Update</a>
         <a href="/restart" class="btn btn-danger">Restart Device</a>
 
-        <p class="footer"><a href="https://github.com/nicholaswilde/home-assistant-adapter" target="_blank" style="color: #89b4fa; text-decoration: none;">GitHub</a></p>
+        <p class="footer"><a href="https://github.com/nicholaswilde/ge-home-assistant-adapter" target="_blank" style="color: #89b4fa; text-decoration: none;">GitHub</a></p>
     </div>
 </body>
 </html>
