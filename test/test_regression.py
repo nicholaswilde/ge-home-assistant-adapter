@@ -57,7 +57,7 @@ class TestUpstreamRegression(unittest.TestCase):
     def test_bridge_initialization(self):
         """Ensure the bridge is initialized with mqtt and serial."""
         self.assertTrue(re.search(r'HomeAssistantBridge\s+bridge;', self.local_main), "Missing bridge instance")
-        self.assertTrue(re.search(r'bridge\.begin\s*\(\s*(mqttClient|getMqttClient\(\))\s*,\s*Serial1\s*,\s*deviceId\s*\)', self.local_main), "Missing bridge.begin")
+        self.assertTrue(re.search(r'bridge\.begin\s*\(\s*(mqttClient|getMqttClient\(\))\s*,\s*Serial1\s*,\s*(deviceId|getSavedDeviceId\(\)\.c_str\(\))\s*\)', self.local_main), "Missing bridge.begin")
 
     def test_bridge_loop(self):
         """Ensure bridge.loop() is called."""
@@ -68,6 +68,12 @@ class TestUpstreamRegression(unittest.TestCase):
         self.assertTrue(re.search(r'mqttClient\.setServer\s*\(', self.local_main), "Missing mqttClient.setServer")
         self.assertTrue(re.search(r'mqttClient\.connect\s*\(', self.local_main), "Missing mqttClient.connect")
         self.assertTrue(re.search(r'bridge\.notifyMqttDisconnected\s*\(\s*\)', self.local_main), "Missing notifyMqttDisconnected")
+
+    def test_dynamic_device_id(self):
+        """Ensure the adapter can dynamically configure the device ID via Preferences."""
+        self.assertTrue(re.search(r'Preferences\s+prefs;', self.local_main), "Missing Preferences initialization")
+        self.assertTrue(re.search(r'prefs\.getString\s*\(\s*"device_id"', self.local_main), "Missing device_id retrieval from Preferences")
+        self.assertTrue(re.search(r'getSavedDeviceId', self.local_main), "Missing getSavedDeviceId function")
 
     def test_serial_initialization(self):
         """Ensure serial ports are initialized."""
