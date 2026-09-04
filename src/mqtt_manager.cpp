@@ -33,7 +33,7 @@ void configureMqtt()
   mqttClient.setServer(savedMqttServer.c_str(), savedMqttPort);
 }
 
-void connectToMqtt(HomeAssistantBridge& bridge)
+void connectToMqtt(CustomHomeAssistantBridge& bridge)
 {
   connectToWifi();
   

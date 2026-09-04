@@ -10,3 +10,4 @@ build
 .env
 lcov.info
 lcov_raw.info
+src/generated/

@@ -3,6 +3,7 @@
 #include "wifi_html.h"
 #include "settings_html.h"
 #include "Config.h"
+#include "generated/ErdParser.h"
 
 const byte DNS_PORT = 53;
 
@@ -136,6 +137,7 @@ void WifiManager::setupRoutes() {
     
     _server.on("/settings", HTTP_POST, [this]() {
         if (_server.hasArg("deviceId")) _preferences.putString("device_id", _server.arg("deviceId"));
+        if (_server.hasArg("appliance_type")) _preferences.putString("appliance_type", _server.arg("appliance_type"));
         if (_server.hasArg("mqtt_server")) _preferences.putString("mqtt_server", _server.arg("mqtt_server"));
         if (_server.hasArg("mqtt_port")) _preferences.putUShort("mqtt_port", _server.arg("mqtt_port").toInt());
         if (_server.hasArg("mqtt_user")) _preferences.putString("mqtt_user", _server.arg("mqtt_user"));
@@ -219,6 +221,16 @@ void WifiManager::handleWifi() {
 
 void WifiManager::handleSettings() {
     String html = String(SETTINGS_HTML);
+    String selectedApp = _preferences.isKey("appliance_type") ? _preferences.getString("appliance_type") : String(defaultApplianceType);
+    
+    String appOptions = "";
+    for (size_t i = 0; i < applianceTypesCount; i++) {
+        String idStr = String(applianceTypes[i].id);
+        String selected = (idStr == selectedApp) ? " selected" : "";
+        appOptions += "<option value=\"" + idStr + "\"" + selected + ">" + String(applianceTypes[i].name) + "</option>\n";
+    }
+    
+    html.replace("%APP_OPTIONS%", appOptions);
     html.replace("%DEVICE_ID%", _preferences.isKey("device_id") ? _preferences.getString("device_id") : String(deviceId));
     html.replace("%MQTT_SERVER%", _preferences.isKey("mqtt_server") ? _preferences.getString("mqtt_server") : String(mqtt_server));
     html.replace("%MQTT_PORT%", String(_preferences.isKey("mqtt_port") ? _preferences.getUShort("mqtt_port") : mqtt_server_port));

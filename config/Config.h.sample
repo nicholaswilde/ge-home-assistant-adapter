@@ -18,5 +18,6 @@ const uint16_t mqtt_server_port = 1883; // or 8883 most common for tls transport
 const char* const mqttUser = "homeassistant";
 const char* const mqttPassword = "Yahz2nihie2couJ8zootee1ae5aingi5caing6ucaicigha2Eeshiel7eew3Eith";
 const char* const deviceId = "some_device"; // unique device identifier
+const char* const defaultApplianceType = "3"; // Default to Refrigeration (see docs/appliance_api.json for feature APIs)
 
 #endif

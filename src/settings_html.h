@@ -38,6 +38,11 @@ const char SETTINGS_HTML[] PROGMEM = R"=====(
             <label for="deviceId">MQTT Device ID</label>
             <input type="text" id="deviceId" name="deviceId" value="%DEVICE_ID%">
             
+            <label for="appliance_type">Appliance Type</label>
+            <select id="appliance_type" name="appliance_type">
+%APP_OPTIONS%
+            </select>
+            
             <div class='section-title'>MQTT Settings</div>
             <label for="mqtt_server">MQTT Server</label>
             <input type="text" id="mqtt_server" name="mqtt_server" value="%MQTT_SERVER%">

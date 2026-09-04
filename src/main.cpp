@@ -1,11 +1,12 @@
 #include <Arduino.h>
-#include "HomeAssistantBridge.h"
+#include "CustomHomeAssistantBridge.h"
 #include "Config.h"
 #include "wifi_manager.h"
 #include "mqtt_manager.h"
 #include "settings_manager.h"
+#include <Preferences.h>
 
-static HomeAssistantBridge bridge;
+static CustomHomeAssistantBridge bridge;
 WifiManager wifiManager;
 
 void setup()
@@ -26,8 +27,12 @@ void setup()
   configureMqtt();
   configureSettings(wifiManager.getServer());
 
-  Serial1.begin(HomeAssistantBridge::baud, SERIAL_8N1, D7, D6);
-  bridge.begin(getMqttClient(), Serial1, getSavedDeviceId().c_str());
+  Serial1.begin(CustomHomeAssistantBridge::baud, SERIAL_8N1, D7, D6);
+  Preferences prefs;
+  prefs.begin("wifi", true);
+  String applianceId = prefs.isKey("appliance_type") ? prefs.getString("appliance_type") : String(defaultApplianceType);
+  prefs.end();
+  bridge.begin(getMqttClient(), Serial1, getSavedDeviceId().c_str(), applianceId);
 }
 
 void loop()

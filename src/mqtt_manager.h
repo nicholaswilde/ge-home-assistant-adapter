@@ -1,8 +1,8 @@
 #pragma once
 #include <PubSubClient.h>
-#include "HomeAssistantBridge.h"
+#include "CustomHomeAssistantBridge.h"
 
 void configureMqtt();
-void connectToMqtt(HomeAssistantBridge& bridge);
+void connectToMqtt(CustomHomeAssistantBridge& bridge);
 PubSubClient& getMqttClient();
 const String& getSavedDeviceId();
