@@ -57,6 +57,7 @@ static void update_erd(i_mqtt_client_t* _self, tiny_erd_t erd, const void* _valu
   char buf[16];
   snprintf(buf, sizeof(buf), "%04x", erd);
   auto topic = String("geappliances/") + self->device_id + "/erd/0x" + String(buf) + "/state";
+  Serial.printf("[MQTT] Publish: %s -> %s\n", topic.c_str(), jsonPayload.c_str());
   self->client->publish(topic.c_str(), jsonPayload.c_str(), true);
 }
 
@@ -68,8 +69,10 @@ static void update_erd_write_result(i_mqtt_client_t* _self, tiny_erd_t erd, bool
   auto topic = String("geappliances/") + self->device_id + "/erd_" + String(buf) + "/write_result";
   
   if(success) {
+    Serial.printf("[MQTT] Publish: %s -> success\n", topic.c_str());
     self->client->publish(topic.c_str(), "success", true);
   } else {
+    Serial.printf("[MQTT] Publish: %s -> failed (reason %d)\n", topic.c_str(), failure_reason);
     self->client->publish(topic.c_str(), "failed", true);
   }
 }
@@ -77,6 +80,7 @@ static void update_erd_write_result(i_mqtt_client_t* _self, tiny_erd_t erd, bool
 static void publish_sub_topic(i_mqtt_client_t* _self, const char* sub_topic, const char* payload) {
   auto self = reinterpret_cast<CustomMqttClientAdapter*>(_self);
   auto topic = String("geappliances/") + self->device_id + "/" + String(sub_topic);
+  Serial.printf("[MQTT] Publish: %s -> %s\n", topic.c_str(), payload);
   self->client->publish(topic.c_str(), payload);
 }
 
