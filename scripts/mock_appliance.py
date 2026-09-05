@@ -33,49 +33,53 @@ def crc16_block(data: bytes, seed: int = 0x1021) -> int:
     return crc
 
 def escape_data(data: bytes) -> bytes:
-    # Not fully implementing escape logic for simple mock, 
-    # but GEA3 escapes E0, E1, E2, E3 by prefixing E0 and XORing with some value
-    # For now, just return data as is unless needed
     res = bytearray()
     for b in data:
-        if (b & 0xFC) == 0xE0:
+        if (b & 0xFC) == 0xE0: # E0, E1, E2, E3
             res.append(ESC)
-            res.append(b ^ 0x10) # rough guess for GEA esc XOR
+            res.append(b)
+        else:
+            res.append(b)
+    return bytes(res)
+
+def unescape_data(data: bytes) -> bytes:
+    res = bytearray()
+    escape_next = False
+    for b in data:
+        if escape_next:
+            res.append(b)
+            escape_next = False
+        elif b == 0xE0:
+            escape_next = True
         else:
             res.append(b)
     return bytes(res)
 
 def send_packet(ser, dest, src, payload):
-    # packet_without_crc = Dest + Length + Src + Payload
-    # Wait, the format from the captured packet:
-    # E2 C0 0A E4 A4 0A 00 80 73 E3
-    # Dest = C0
-    # Length = 0A (10 bytes total)
-    # Src = E4
-    # Payload = A4 0A 00
-    # Length = 2 (STX, ETX) + 1 (Dest) + 1 (Length) + 1 (Src) + len(payload) + 2 (CRC) = 7 + len(payload)
     length = 7 + len(payload)
-    
-    # Header: Dest, Length, Src
     header = struct.pack('BBB', dest, length, src)
     
     crc_data = header + payload
     crc = crc16_block(crc_data)
-    crc_bytes = struct.pack('>H', crc) # MSB first based on 80 73
+    crc_bytes = struct.pack('>H', crc)
     
-    packet = bytes([STX]) + header + payload + crc_bytes + bytes([ETX])
+    packet_inner = header + payload + crc_bytes
+    packet_inner_escaped = escape_data(packet_inner)
+    
+    packet = bytes([STX]) + packet_inner_escaped + bytes([ETX])
     print(f"Sending: {packet.hex()}")
     ser.write(packet)
 
 def handle_packet(ser, packet):
-    if len(packet) < 7:
+    packet_inner = unescape_data(packet[1:-1])
+    if len(packet_inner) < 5:
         return
         
-    dest = packet[1]
-    length = packet[2]
-    src = packet[3]
-    payload = packet[4:-3]
-    crc_bytes = packet[-3:-1]
+    dest = packet_inner[0]
+    length = packet_inner[1]
+    src = packet_inner[2]
+    payload = packet_inner[3:-2]
+    crc_bytes = packet_inner[-2:]
     
     print(f"Received from {hex(src)} to {hex(dest)}: Payload {payload.hex()}")
     
@@ -125,6 +129,9 @@ def main():
     
     with serial.Serial(args.port, args.baud, timeout=0.1) as ser:
         buffer = bytearray()
+        last_pub_time = time.time()
+        pub_req_id = 0
+        
         try:
             while True:
                 data = ser.read(100)
@@ -148,6 +155,28 @@ def main():
                         else:
                             buffer.clear()
                             break
+                
+                # Periodically publish mock ERDs every 5 seconds
+                if time.time() - last_pub_time > 5.0:
+                    last_pub_time = time.time()
+                    pub_req_id = (pub_req_id + 1) % 256
+                    
+                    # Dummy ERD Data
+                    # ERD 0x2000 (Oven Temp, e.g. 350F -> 0x015E)
+                    erd = 0x2000
+                    erd_bytes = struct.pack('>H', erd)
+                    mock_data = struct.pack('>H', 350)
+                    data_len = len(mock_data)
+                    
+                    print(f"Publishing mock ERD 0x{erd:04X} = {mock_data.hex()}")
+                    
+                    # Publication Header: CMD(A6), Context(00), ReqID, Count(1)
+                    header = bytes([CMD_PUB, 0x00, pub_req_id, 0x01])
+                    payload = header + erd_bytes + bytes([data_len]) + mock_data
+                    
+                    # Dest=E4 (ESP32), Src=C0 (Appliance)
+                    send_packet(ser, 0xE4, 0xC0, payload)
+                    
         except KeyboardInterrupt:
             print("\nExiting")
 
