@@ -164,6 +164,31 @@ uv run python scripts/test_serial.py --port /dev/ttyUSB0 --baud 230400
 Sample yaml can be found in
 [home-assistant-examples](https://github.com/geappliances/home-assistant-examples).
 
+## Wiring
+
+- FTDI TX -> RJ45 Pin 4 (Board RX).
+- FTDI RX -> RJ45 Pin 5 (Board TX).
+- FTDI GND -> RJ45 PIN 8 (Board GND).
+
+```text
+     +--------------------+
+     |                    |
+     |                 +----------+
+     |                 |  RJ45    |
+     |                 |     1[ ] |
++---------+            |     2[ ] |    +--------+
+|         |            |     3[ ] |----| [ ]    |
+| ESP32C3 |            |  RX 4[X] |----| [X]TX  |
+|         |            |  TX 5[X] |----| [X]RX  |
++---------+            |     6[ ] |    | [ ]    |
+     |                 |     7[ ] |    | [ ]    |
+     |                 | GND 8[X] |----| [X]GND |
+     |                 +----------+    +--------+
+     |                    |               FTDI
+     +--------------------+
+         GE HA Adapter
+```
+
 ## :balance_scale: License
 
 ​[BSD 3-Clause License](LICENSE)
