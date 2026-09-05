@@ -138,6 +138,27 @@ Opens the PlatformIO serial monitor to view a connected ESP32-C3's serial output
 task monitor
 ```
 
+### Hardware Serial Test (FTDI to RJ45)
+
+Verify GEA3 serial communication between the carrier board's RJ45 connector and a USB-to-TTL (FTDI) serial adapter plugged into `/dev/ttyUSB0` at 230400 baud.
+
+Wiring:
+- RJ45 Pin 4 (Board RX) &rarr; FTDI TX
+- RJ45 Pin 5 (Board TX) &rarr; FTDI RX
+- RJ45 Pin 8 (GND) &rarr; FTDI GND
+
+Run the test script:
+
+```bash
+uv run python scripts/test_serial.py
+```
+
+Pass `--port` or `--baud` if using different parameters:
+
+```bash
+uv run python scripts/test_serial.py --port /dev/ttyUSB0 --baud 230400
+```
+
 ## :file_folder: Example Home Assistant Configuration
 
 Sample yaml can be found in
