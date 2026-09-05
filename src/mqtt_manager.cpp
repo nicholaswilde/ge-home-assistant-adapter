@@ -31,6 +31,7 @@ void configureMqtt()
   prefs.end();
 
   mqttClient.setServer(savedMqttServer.c_str(), savedMqttPort);
+  mqttClient.setBufferSize(1024);
 }
 
 void connectToMqtt(CustomHomeAssistantBridge& bridge)
