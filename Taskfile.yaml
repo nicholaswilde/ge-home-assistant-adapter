@@ -59,6 +59,12 @@ tasks:
     cmds:
       - pio device monitor
 
+  mock:
+    desc: Run the mock appliance script
+    cmds:
+      - uv run python scripts/mock_appliance.py {{.CLI_ARGS}}
+
+
   euam:
     desc: Erase, upload, and monitor the device
     cmds:
