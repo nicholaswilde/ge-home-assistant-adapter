@@ -159,16 +159,40 @@ Pass `--port` or `--baud` if using different parameters:
 uv run python scripts/test_serial.py --port /dev/ttyUSB0 --baud 230400
 ```
 
+### Mock Appliance
+
+Simulate a GEA3 appliance to test serial communication and verify Home Assistant MQTT auto-discovery without physical hardware:
+
+```bash
+task mock
+```
+
+Pass arguments (e.g. `--port`) using Task's `--` separator:
+
+```bash
+task mock -- --port /dev/ttyUSB0
+```
+
+
 ## :file_folder: Example Home Assistant Configuration
 
 Sample yaml can be found in
 [home-assistant-examples](https://github.com/geappliances/home-assistant-examples).
 
-## Wiring
+## :electric_plug: FTDI Wiring
 
-- FTDI TX -> RJ45 Pin 4 (Board RX).
-- FTDI RX -> RJ45 Pin 5 (Board TX).
-- FTDI GND -> RJ45 PIN 8 (Board GND).
+A 3.3V USB-to-TTL serial adapter (such as an FTDI FT232RL) can be connected to the carrier board's RJ45 jack to verify GEA3 communication using `scripts/test_serial.py` or simulate an appliance with `task mock`.
+
+### Pinout Connections
+
+- **FTDI TXD** &rarr; **RJ45 Pin 4** (Board RX)
+- **FTDI RXD** &rarr; **RJ45 Pin 5** (Board TX)
+- **FTDI GND** &rarr; **RJ45 Pin 8** (Board GND)
+
+> [!NOTE]
+> Leave VCC, RTS, CTS, and remaining RJ45 pins disconnected. The ESP32 is powered independently via its USB-C port.
+
+### Wiring Diagram
 
 ```text
      +--------------------+
