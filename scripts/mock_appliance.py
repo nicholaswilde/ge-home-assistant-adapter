@@ -155,27 +155,32 @@ def main():
                         else:
                             buffer.clear()
                             break
-                
                 # Periodically publish mock ERDs every 5 seconds
                 if time.time() - last_pub_time > 5.0:
                     last_pub_time = time.time()
                     pub_req_id = (pub_req_id + 1) % 256
                     
                     # Dummy ERD Data
-                    # ERD 0x2000 (Oven Temp, e.g. 350F -> 0x015E)
-                    erd = 0x2000
-                    erd_bytes = struct.pack('>H', erd)
-                    mock_data = struct.pack('>H', 350)
-                    data_len = len(mock_data)
+                    erds = [
+                        (0x0001, bytes([0x08])),                         # Appliance Type: Oven
+                        (0x0008, b"MOCK_OVEN_1"),                        # Model Number
+                        (0x2000, struct.pack('>H', 350)),                # Oven Temp: 350
+                        (0x2001, struct.pack('>H', 350)),                # Target Temp: 350
+                        (0x5007, bytes([0x01]))                          # Door Status: Closed
+                    ]
                     
-                    print(f"Publishing mock ERD 0x{erd:04X} = {mock_data.hex()}")
+                    print(f"Publishing {len(erds)} mock ERDs...")
                     
-                    # Publication Header: CMD(A6), Context(00), ReqID, Count(1)
-                    header = bytes([CMD_PUB, 0x00, pub_req_id, 0x01])
-                    payload = header + erd_bytes + bytes([data_len]) + mock_data
+                    # Publication Header: CMD(A6), Context(00), ReqID, Count
+                    payload = bytearray([CMD_PUB, 0x00, pub_req_id, len(erds)])
+                    
+                    for erd_id, erd_data in erds:
+                        payload.extend(struct.pack('>H', erd_id))
+                        payload.append(len(erd_data))
+                        payload.extend(erd_data)
                     
                     # Dest=E4 (ESP32), Src=C0 (Appliance)
-                    send_packet(ser, 0xE4, 0xC0, payload)
+                    send_packet(ser, 0xE4, 0xC0, bytes(payload))
                     
         except KeyboardInterrupt:
             print("\nExiting")
